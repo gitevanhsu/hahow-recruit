@@ -72,19 +72,50 @@ export default function HeroProfile() {
       });
   }, [heroId]);
 
+  const increasePoint = (attr: string) => {
+    if (!leftPoint) return;
+    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] += 1) }));
+    setLeftPoint((l) => l - 1);
+  };
+
+  const decreasePoint = (attr: string) => {
+    if (attributePoint[attr] <= 0) return;
+    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] -= 1) }));
+    setLeftPoint((l) => l + 1);
+  };
+
+  const submitProfile = () => {
+    if (leftPoint) return;
+    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`, {
+      method: "PATCH",
+      headers: { "Content-Type": " application/json" },
+      body: JSON.stringify(attributePoint),
+    });
+  };
+
   return (
     <ProfileWrap>
       <AttributeWrap>
         {attributeList.map((item) => (
           <Attribute key={item}>
             <AttributeName>{item}</AttributeName>
-            <ButtonComponent isSubmit={false} clickHandler={() => {}}>
+            <ButtonComponent
+              isSubmit={false}
+              clickHandler={() => {
+                increasePoint(item.toLowerCase());
+              }}
+            >
               +
             </ButtonComponent>
             <AttributeCount>
               {attributePoint && attributePoint[item.toLowerCase()]}
             </AttributeCount>
-            <ButtonComponent isSubmit={false} clickHandler={() => {}}>
+            <ButtonComponent
+              isSubmit={false}
+              clickHandler={() => {
+                decreasePoint(item.toLowerCase());
+              }}
+            >
               -
             </ButtonComponent>
           </Attribute>
@@ -92,7 +123,7 @@ export default function HeroProfile() {
       </AttributeWrap>
       <LeftPointWrap>
         <LeftPoint>剩餘點數：{leftPoint}</LeftPoint>
-        <ButtonComponent isSubmit clickHandler={() => {}}>
+        <ButtonComponent isSubmit clickHandler={submitProfile}>
           儲存
         </ButtonComponent>
       </LeftPointWrap>
