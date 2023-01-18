@@ -1,5 +1,39 @@
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
+import styled from "@emotion/styled";
+
+import HeroImg from "/standard_xlarge.jpg";
+
+const PageWrap = styled.div`
+  padding-top: 100px;
+`;
+const HeroListWrap = styled.div`
+  width: 95%;
+  max-width: 980px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #000;
+`;
+
+const HeroCard = styled(Link)`
+  display: block;
+  width: 220px;
+  margin: 10px 5px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid #000;
+`;
+const HeroImage = styled.img``;
+const HeroName = styled.h2`
+  margin: 10px 0;
+  font-size: 24px;
+`;
 
 export default function Heroes() {
   const location = useLocation();
@@ -9,12 +43,29 @@ export default function Heroes() {
     } else {
       document.title = "Hero Profile Page";
     }
-  }, []);
+  }, [location]);
 
   return (
-    <>
-      <h1>Heroes List page</h1>
+    <PageWrap>
+      <HeroListWrap>
+        <HeroCard to="/heroes/1">
+          <HeroImage src={HeroImg} />
+          <HeroName>Daredevil</HeroName>
+        </HeroCard>
+        <HeroCard to="/heroes/1">
+          <HeroImage src={HeroImg} />
+          <HeroName>Daredevil</HeroName>
+        </HeroCard>
+        <HeroCard to="/heroes/1">
+          <HeroImage src={HeroImg} />
+          <HeroName>Daredevil</HeroName>
+        </HeroCard>
+        <HeroCard to="/heroes/1">
+          <HeroImage src={HeroImg} />
+          <HeroName>Daredevil</HeroName>
+        </HeroCard>
+      </HeroListWrap>
       <Outlet />
-    </>
+    </PageWrap>
   );
 }
