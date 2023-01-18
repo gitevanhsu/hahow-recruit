@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { createPortal } from "react-dom";
 import styled from "@emotion/styled";
 
 import ButtonComponent from "../components/Button";
 import { HeroProfileType } from "../types";
+import NoticeAlert from "../modal";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -65,6 +67,11 @@ export default function HeroProfile() {
   const { heroId } = useParams();
   const navigate = useNavigate();
 
+  const [showSaveNotice, setShowSaveNotice] = useState(false);
+  const [showSaveFailNotice, setShowSaveFailNotice] = useState(false);
+  const [showTooLowNotice, setShowTooLowNotice] = useState(false);
+  const [showNoPointNotice, setShowNoPointNotice] = useState(false);
+
   useEffect(() => {
     fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`)
       .then((res) => {
@@ -81,24 +88,40 @@ export default function HeroProfile() {
   }, [heroId, navigate]);
 
   const increasePoint = (attr: string) => {
-    if (!leftPoint) return;
-    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] += 1) }));
-    setLeftPoint((l) => l - 1);
+    if (!leftPoint) {
+      setShowNoPointNotice(true);
+    } else {
+      setAttributePoint({
+        ...attributePoint,
+        [attr]: (attributePoint[attr] += 1),
+      });
+      setLeftPoint(leftPoint - 1);
+    }
   };
 
   const decreasePoint = (attr: string) => {
-    if (attributePoint[attr] <= 0) return;
-    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] -= 1) }));
-    setLeftPoint((l) => l + 1);
+    if (attributePoint[attr] <= 0) {
+      setShowTooLowNotice(true);
+    } else {
+      setAttributePoint({
+        ...attributePoint,
+        [attr]: (attributePoint[attr] -= 1),
+      });
+      setLeftPoint(leftPoint + 1);
+    }
   };
 
   const submitProfile = () => {
-    if (leftPoint) return;
-    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`, {
-      method: "PATCH",
-      headers: { "Content-Type": " application/json" },
-      body: JSON.stringify(attributePoint),
-    });
+    if (leftPoint) {
+      setShowSaveFailNotice(true);
+    } else {
+      fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`, {
+        method: "PATCH",
+        headers: { "Content-Type": " application/json" },
+        body: JSON.stringify(attributePoint),
+      });
+      setShowSaveNotice(true);
+    }
   };
 
   return (
@@ -138,6 +161,51 @@ export default function HeroProfile() {
           儲存
         </ButtonComponent>
       </LeftPointWrap>
+
+      {showSaveFailNotice &&
+        createPortal(
+          <NoticeAlert
+            closeModal={() => {
+              setShowSaveFailNotice(false);
+            }}
+          >
+            尚有點數未分配
+          </NoticeAlert>,
+          document.querySelector("#modal-root") as HTMLElement
+        )}
+      {showSaveNotice &&
+        createPortal(
+          <NoticeAlert
+            closeModal={() => {
+              setShowSaveNotice(false);
+            }}
+          >
+            已成功儲存資料
+          </NoticeAlert>,
+          document.querySelector("#modal-root") as HTMLElement
+        )}
+      {showTooLowNotice &&
+        createPortal(
+          <NoticeAlert
+            closeModal={() => {
+              setShowTooLowNotice(false);
+            }}
+          >
+            點數不能低於 0
+          </NoticeAlert>,
+          document.querySelector("#modal-root") as HTMLElement
+        )}
+      {showNoPointNotice &&
+        createPortal(
+          <NoticeAlert
+            closeModal={() => {
+              setShowNoPointNotice(false);
+            }}
+          >
+            無可分配點數
+          </NoticeAlert>,
+          document.querySelector("#modal-root") as HTMLElement
+        )}
     </ProfileWrap>
   );
 }
