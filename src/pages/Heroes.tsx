@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import HeroImg from "/standard_xlarge.jpg";
 
 const PageWrap = styled.div`
-  padding-top: 100px;
+  padding: 50px 0;
 `;
 const HeroListWrap = styled.div`
   width: 95%;
@@ -31,8 +31,9 @@ const HeroCard = styled(Link)`
 `;
 const HeroImage = styled.img``;
 const HeroName = styled.h2`
-  margin: 10px 0;
+  margin: 30px 0;
   font-size: 24px;
+  font-weight: 500;
 `;
 
 export default function Heroes() {

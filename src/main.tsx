@@ -10,7 +10,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <Global
       styles={css`
         ${emotionReset}
-
         *, *::after, *::before {
           box-sizing: border-box;
           -moz-osx-font-smoothing: grayscale;

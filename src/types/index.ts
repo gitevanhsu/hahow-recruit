@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 
 interface ButtonType {
-  children: ReactElement;
+  children: string;
   clickHandler: () => void;
   isSubmit: boolean;
 }
