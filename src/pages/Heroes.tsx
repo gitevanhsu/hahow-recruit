@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, Link } from "react-router-dom";
 import styled from "@emotion/styled";
 
-import HeroImg from "/standard_xlarge.jpg";
+import useGetHeroList from "../hooks/useGetHeroList";
 
 const PageWrap = styled.div`
   padding: 50px 0;
@@ -38,6 +38,8 @@ const HeroName = styled.h2`
 
 export default function Heroes() {
   const location = useLocation();
+
+  // modify tab title when path change.
   useEffect(() => {
     if (location.pathname === "/heroes/" || location.pathname === "/heroes") {
       document.title = "Hero List Page";
@@ -45,26 +47,20 @@ export default function Heroes() {
       document.title = "Hero Profile Page";
     }
   }, [location]);
+  const heroList = useGetHeroList();
 
   return (
     <PageWrap>
       <HeroListWrap>
-        <HeroCard to="/heroes/1">
-          <HeroImage src={HeroImg} />
-          <HeroName>Daredevil</HeroName>
-        </HeroCard>
-        <HeroCard to="/heroes/1">
-          <HeroImage src={HeroImg} />
-          <HeroName>Daredevil</HeroName>
-        </HeroCard>
-        <HeroCard to="/heroes/1">
-          <HeroImage src={HeroImg} />
-          <HeroName>Daredevil</HeroName>
-        </HeroCard>
-        <HeroCard to="/heroes/1">
-          <HeroImage src={HeroImg} />
-          <HeroName>Daredevil</HeroName>
-        </HeroCard>
+        {heroList.map((hero) => {
+          const { id, image, name } = hero;
+          return (
+            <HeroCard to={`/heroes/${id}`} key={id}>
+              <HeroImage src={image} />
+              <HeroName>{name}</HeroName>
+            </HeroCard>
+          );
+        })}
       </HeroListWrap>
       <Outlet />
     </PageWrap>
