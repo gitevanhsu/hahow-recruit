@@ -8,8 +8,15 @@ interface ButtonProps {
 }
 
 interface HeroCardProps {
-  nowPath: boolean;
+  current: string;
 }
+
+interface HeroInfoType {
+  id: string;
+  image: string;
+  name: string;
+}
+
 interface HeroProfileType {
   [key: string]: number;
   agi: number;
@@ -18,4 +25,10 @@ interface HeroProfileType {
   str: number;
 }
 
-export type { ButtonType, ButtonProps, HeroCardProps, HeroProfileType };
+export type {
+  ButtonType,
+  ButtonProps,
+  HeroCardProps,
+  HeroProfileType,
+  HeroInfoType,
+};

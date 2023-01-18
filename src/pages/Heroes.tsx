@@ -3,7 +3,7 @@ import { Outlet, useLocation, Link, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import useGetHeroList from "../hooks/useGetHeroList";
-import { HeroCardProps } from "../types";
+import { HeroCardProps, HeroInfoType } from "../types";
 
 const PageWrap = styled.div`
   padding: 50px 0;
@@ -28,7 +28,7 @@ const HeroCard = styled(Link)<HeroCardProps>`
   cursor: pointer;
   text-decoration: none;
   color: #000;
-  border: 2px solid ${(props) => (props.nowPath ? "#f00" : "#000")};
+  border: 2px solid ${(props) => (props.current === "true" ? "#f00" : "#000")};
 `;
 const HeroImage = styled.img``;
 const HeroName = styled.h2`
@@ -54,10 +54,14 @@ export default function Heroes() {
   return (
     <PageWrap>
       <HeroListWrap>
-        {heroList.map((hero) => {
+        {heroList.map((hero: HeroInfoType) => {
           const { id, image, name } = hero;
           return (
-            <HeroCard nowPath={heroId === id} to={`/heroes/${id}`} key={id}>
+            <HeroCard
+              current={`${heroId === id}`}
+              to={`/heroes/${id}`}
+              key={id}
+            >
               <HeroImage src={image} />
               <HeroName>{name}</HeroName>
             </HeroCard>

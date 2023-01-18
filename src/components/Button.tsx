@@ -1,5 +1,5 @@
-import { ButtonType, ButtonProps } from "../types";
 import styled from "@emotion/styled";
+import { ButtonType, ButtonProps } from "../types";
 
 const Button = styled.button<ButtonProps>`
   min-width: 30px;

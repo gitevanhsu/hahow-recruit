@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import ButtonComponent from "../components/Button";
@@ -63,14 +63,22 @@ export default function HeroProfile() {
     useState<HeroProfileType>(attributeInit);
   const [leftPoint, setLeftPoint] = useState(0);
   const { heroId } = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        }
+        throw new Error("nodata");
+      })
       .then((data) => {
         setAttributePoint(data);
         setLeftPoint(0);
-      });
-  }, [heroId]);
+      })
+      .catch(() => navigate("/heroes/1"));
+  }, [heroId, navigate]);
 
   const increasePoint = (attr: string) => {
     if (!leftPoint) return;
@@ -122,7 +130,10 @@ export default function HeroProfile() {
         ))}
       </AttributeWrap>
       <LeftPointWrap>
-        <LeftPoint>剩餘點數：{leftPoint}</LeftPoint>
+        <LeftPoint>
+          剩餘點數：
+          {leftPoint}
+        </LeftPoint>
         <ButtonComponent isSubmit clickHandler={submitProfile}>
           儲存
         </ButtonComponent>
