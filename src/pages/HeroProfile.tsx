@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import ButtonComponent from "../components/Button";
+import { HeroProfileType } from "../types";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -17,7 +19,7 @@ const ProfileWrap = styled.div`
 `;
 const AttributeWrap = styled.div`
   width: 50%;
-  min-width: 300px;
+  min-width: 210px;
 `;
 const Attribute = styled.div`
   padding: 20px 10px;
@@ -26,7 +28,7 @@ const Attribute = styled.div`
   align-items: center;
 `;
 const AttributeName = styled.div`
-  width: 150px;
+  width: 100px;
 `;
 const AttributeCount = styled.div`
   width: 50px;
@@ -34,11 +36,11 @@ const AttributeCount = styled.div`
 `;
 
 const LeftPointWrap = styled(AttributeWrap)`
-  padding: 20px;
+  padding: 10px;
   margin-top: auto;
   margin-right: auto;
   text-align: right;
-  @media screen and (max-width: 586px) {
+  @media screen and (max-width: 507px) {
     margin-top: 20px;
     text-align: left;
   }
@@ -49,29 +51,79 @@ const LeftPoint = styled.p`
 `;
 
 const attributeList = ["STR", "INT", "AGI", "LUK"];
+const attributeInit = {
+  agi: 0,
+  int: 0,
+  luk: 0,
+  str: 0,
+};
 
 export default function HeroProfile() {
-  let { heroId } = useParams();
+  const [attributePoint, setAttributePoint] =
+    useState<HeroProfileType>(attributeInit);
+  const [leftPoint, setLeftPoint] = useState(0);
+  const { heroId } = useParams();
+  useEffect(() => {
+    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAttributePoint(data);
+        setLeftPoint(0);
+      });
+  }, [heroId]);
+
+  const increasePoint = (attr: string) => {
+    if (!leftPoint) return;
+    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] += 1) }));
+    setLeftPoint((l) => l - 1);
+  };
+
+  const decreasePoint = (attr: string) => {
+    if (attributePoint[attr] <= 0) return;
+    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] -= 1) }));
+    setLeftPoint((l) => l + 1);
+  };
+
+  const submitProfile = () => {
+    if (leftPoint) return;
+    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`, {
+      method: "PATCH",
+      headers: { "Content-Type": " application/json" },
+      body: JSON.stringify(attributePoint),
+    });
+  };
 
   return (
     <ProfileWrap>
       <AttributeWrap>
         {attributeList.map((item) => (
-          <Attribute>
+          <Attribute key={item}>
             <AttributeName>{item}</AttributeName>
-            <ButtonComponent isSubmit={false} clickHandler={() => {}}>
+            <ButtonComponent
+              isSubmit={false}
+              clickHandler={() => {
+                increasePoint(item.toLowerCase());
+              }}
+            >
               +
             </ButtonComponent>
-            <AttributeCount>0</AttributeCount>
-            <ButtonComponent isSubmit={false} clickHandler={() => {}}>
+            <AttributeCount>
+              {attributePoint && attributePoint[item.toLowerCase()]}
+            </AttributeCount>
+            <ButtonComponent
+              isSubmit={false}
+              clickHandler={() => {
+                decreasePoint(item.toLowerCase());
+              }}
+            >
               -
             </ButtonComponent>
           </Attribute>
         ))}
       </AttributeWrap>
       <LeftPointWrap>
-        <LeftPoint>剩餘點數：0</LeftPoint>
-        <ButtonComponent isSubmit clickHandler={() => {}}>
+        <LeftPoint>剩餘點數：{leftPoint}</LeftPoint>
+        <ButtonComponent isSubmit clickHandler={submitProfile}>
           儲存
         </ButtonComponent>
       </LeftPointWrap>

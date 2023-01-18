@@ -10,6 +10,7 @@ const Button = styled.button<ButtonProps>`
   background-color: #e6e6e6;
   border: 2px solid #000;
   border-radius: 5px;
+  cursor: pointer;
 `;
 
 export default function ButtonComponent({
