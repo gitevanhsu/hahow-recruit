@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, Link } from "react-router-dom";
+import { Outlet, useLocation, Link, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import useGetHeroList from "../hooks/useGetHeroList";
+import { HeroCardProps } from "../types";
 
 const PageWrap = styled.div`
   padding: 50px 0;
@@ -18,7 +19,7 @@ const HeroListWrap = styled.div`
   border: 1px solid #000;
 `;
 
-const HeroCard = styled(Link)`
+const HeroCard = styled(Link)<HeroCardProps>`
   display: block;
   width: 220px;
   margin: 10px 5px;
@@ -27,7 +28,7 @@ const HeroCard = styled(Link)`
   cursor: pointer;
   text-decoration: none;
   color: #000;
-  border: 1px solid #000;
+  border: 2px solid ${(props) => (props.nowPath ? "#f00" : "#000")};
 `;
 const HeroImage = styled.img``;
 const HeroName = styled.h2`
@@ -38,6 +39,7 @@ const HeroName = styled.h2`
 
 export default function Heroes() {
   const location = useLocation();
+  const { heroId } = useParams();
 
   // modify tab title when path change.
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function Heroes() {
         {heroList.map((hero) => {
           const { id, image, name } = hero;
           return (
-            <HeroCard to={`/heroes/${id}`} key={id}>
+            <HeroCard nowPath={heroId === id} to={`/heroes/${id}`} key={id}>
               <HeroImage src={image} />
               <HeroName>{name}</HeroName>
             </HeroCard>

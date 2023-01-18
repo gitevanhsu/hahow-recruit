@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import ButtonComponent from "../components/Button";
+import { HeroProfileType } from "../types";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -49,9 +51,26 @@ const LeftPoint = styled.p`
 `;
 
 const attributeList = ["STR", "INT", "AGI", "LUK"];
+const attributeInit = {
+  agi: 0,
+  int: 0,
+  luk: 0,
+  str: 0,
+};
 
 export default function HeroProfile() {
-  let { heroId } = useParams();
+  const [attributePoint, setAttributePoint] =
+    useState<HeroProfileType>(attributeInit);
+  const [leftPoint, setLeftPoint] = useState(0);
+  const { heroId } = useParams();
+  useEffect(() => {
+    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAttributePoint(data);
+        setLeftPoint(0);
+      });
+  }, [heroId]);
 
   return (
     <ProfileWrap>
@@ -62,7 +81,9 @@ export default function HeroProfile() {
             <ButtonComponent isSubmit={false} clickHandler={() => {}}>
               +
             </ButtonComponent>
-            <AttributeCount>0</AttributeCount>
+            <AttributeCount>
+              {attributePoint && attributePoint[item.toLowerCase()]}
+            </AttributeCount>
             <ButtonComponent isSubmit={false} clickHandler={() => {}}>
               -
             </ButtonComponent>
@@ -70,7 +91,7 @@ export default function HeroProfile() {
         ))}
       </AttributeWrap>
       <LeftPointWrap>
-        <LeftPoint>剩餘點數：0</LeftPoint>
+        <LeftPoint>剩餘點數：{leftPoint}</LeftPoint>
         <ButtonComponent isSubmit clickHandler={() => {}}>
           儲存
         </ButtonComponent>
