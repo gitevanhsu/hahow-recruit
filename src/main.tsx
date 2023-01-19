@@ -6,7 +6,7 @@ import { Global, css } from "@emotion/react";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+  <>
     <Global
       styles={css`
         ${emotionReset}
@@ -19,5 +19,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       `}
     />
     <App />
-  </React.StrictMode>
+  </>
 );

@@ -1,6 +1,15 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { useEffect } from "react";
 import { Outlet, useLocation, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+  DroppableProvided,
+  DraggableProvided,
+} from "react-beautiful-dnd";
 
 import useGetHeroList from "../hooks/useGetHeroList";
 import { HeroInfoType } from "../types";
@@ -27,9 +36,8 @@ export default function Heroes() {
   const location = useLocation();
   const { heroId } = useParams();
 
-  const heroList = useGetHeroList();
+  const { heroList, setHeroList } = useGetHeroList();
 
-  // modify tab title when path change.
   useEffect(() => {
     if (location.pathname === "/heroes/" || location.pathname === "/heroes") {
       document.title = "Hero List Page";
@@ -38,23 +46,51 @@ export default function Heroes() {
     }
   }, [location]);
 
+  const onDragEnd = (dragEvent: DropResult) => {
+    if (!dragEvent.destination) return;
+    const dragIndex = dragEvent.source.index;
+    const dropIndex = dragEvent.destination.index;
+    const newList = [...heroList];
+    const [dragItem] = newList.slice(dragIndex, dragIndex + 1);
+    newList.splice(dragIndex, 1);
+    newList.splice(dropIndex, 0, dragItem);
+    setHeroList(newList);
+  };
+
   return (
     <HeroesProfileProvider heroList={heroList}>
       <PageWrap>
-        <HeroListWrap>
-          {heroList.map((hero: HeroInfoType) => {
-            const { id, image, name } = hero;
-            return (
-              <HeroCardComponent
-                key={id}
-                heroId={heroId}
-                id={id}
-                image={image}
-                name={name}
-              />
-            );
-          })}
-        </HeroListWrap>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="heroes" direction="horizontal">
+            {(provided: DroppableProvided) => (
+              <HeroListWrap ref={provided.innerRef}>
+                {heroList.map((hero: HeroInfoType, index) => {
+                  const { id, image, name } = hero;
+                  return (
+                    <Draggable draggableId={id} index={index} key={id}>
+                      {(dragProvided: DraggableProvided) => (
+                        <div
+                          {...dragProvided.draggableProps}
+                          {...dragProvided.dragHandleProps}
+                          ref={dragProvided.innerRef}
+                        >
+                          <HeroCardComponent
+                            heroId={heroId}
+                            id={id}
+                            image={image}
+                            name={name}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
+                {provided.placeholder}
+              </HeroListWrap>
+            )}
+          </Droppable>
+        </DragDropContext>
+
         {heroId && <Outlet context={heroId} />}
       </PageWrap>
     </HeroesProfileProvider>

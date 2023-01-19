@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 export default function useGetHeroList() {
-  const [heroes, setHeroes] = useState([]);
+  const [heroList, setHeroList] = useState([]);
 
   useEffect(() => {
     fetch("https://hahow-recruit.herokuapp.com/heroes")
       .then((res) => res.json())
-      .then((data) => setHeroes(data));
+      .then((data) => setHeroList(data));
   }, []);
 
-  return heroes;
+  return { heroList, setHeroList };
 }
