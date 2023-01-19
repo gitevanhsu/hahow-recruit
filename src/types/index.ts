@@ -37,6 +37,9 @@ interface LeftPointAreaProps {
   point: number;
 }
 
+interface ModalContentProps {
+  popup: boolean;
+}
 export type {
   ButtonType,
   ButtonProps,
@@ -45,4 +48,5 @@ export type {
   HeroInfoType,
   AttributeItemProps,
   LeftPointAreaProps,
+  ModalContentProps,
 };

@@ -1,5 +1,9 @@
 import styled from "@emotion/styled";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+// eslint-disable-next-line import/no-unresolved, import/no-absolute-path
+import notice from "/notice.png";
+import { ModalContentProps } from "../types";
 
 const ModalWrap = styled.div`
   width: 100vw;
@@ -7,7 +11,6 @@ const ModalWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
   position: absolute;
   top: 0;
   left: 0;
@@ -21,15 +24,36 @@ const OverLay = styled.div`
   opacity: 0.3;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<ModalContentProps>`
   width: 300px;
   height: 300px;
+  padding: 20px;
   background-color: #fff;
-  text-align: center;
-  line-height: 300px;
   position: absolute;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &:after {
+    content: "";
+    width: ${(props) => (props.popup ? "0%" : "100%")};
+    height: 10px;
+    background-color: #00b3c3;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: width 1s linear;
+  }
 `;
 
+const Image = styled.img`
+  width: 50%;
+`;
+const Text = styled.p`
+  display: inline-block;
+  margin-top: 50px;
+  font-size: 24px;
+`;
 export default function NoticeAlert({
   children,
   closeModal,
@@ -37,16 +61,23 @@ export default function NoticeAlert({
   children: string;
   closeModal: () => void;
 }) {
+  const [isPopup, setIsPopup] = useState(false);
+
   useEffect(() => {
+    setIsPopup(true);
     setTimeout(() => {
       closeModal();
     }, 1000);
+    return () => setIsPopup(false);
   }, [closeModal]);
 
   return (
     <ModalWrap>
       <OverLay onClick={closeModal} />
-      <ModalContent>{children}</ModalContent>
+      <ModalContent popup={isPopup}>
+        <Image src={notice} alt="notice" />
+        <Text>{children}</Text>
+      </ModalContent>
     </ModalWrap>
   );
 }
