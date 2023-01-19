@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 interface ButtonType {
   children: string;
   clickHandler: () => void;
@@ -25,10 +27,24 @@ interface HeroProfileType {
   str: number;
 }
 
+interface AttributeItemProps {
+  attributePoint: HeroProfileType;
+  attributeName: string;
+  increaseHandler: (attr: string) => void;
+  decreaseHandler: (attr: string) => void;
+}
+
+interface LeftPointAreaProps {
+  submitFunction: () => void;
+  point: number;
+}
+
 export type {
   ButtonType,
   ButtonProps,
   HeroCardProps,
   HeroProfileType,
   HeroInfoType,
+  AttributeItemProps,
+  LeftPointAreaProps,
 };

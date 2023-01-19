@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { createPortal } from "react-dom";
 import styled from "@emotion/styled";
 
-import ButtonComponent from "../components/Button";
 import { HeroProfileType } from "../types";
-import NoticeAlert from "../modal";
+import NoticeModal from "../components/NoticeModal";
+import LeftPointArea from "../components/LeftPointArea";
+import AttributeItem from "../components/Attribute";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -22,34 +22,6 @@ const ProfileWrap = styled.div`
 const AttributeWrap = styled.div`
   width: 50%;
   min-width: 210px;
-`;
-const Attribute = styled.div`
-  padding: 20px 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const AttributeName = styled.div`
-  width: 100px;
-`;
-const AttributeCount = styled.div`
-  width: 50px;
-  text-align: center;
-`;
-
-const LeftPointWrap = styled(AttributeWrap)`
-  padding: 10px;
-  margin-top: auto;
-  margin-right: auto;
-  text-align: right;
-  @media screen and (max-width: 507px) {
-    margin-top: 20px;
-    text-align: left;
-  }
-`;
-
-const LeftPoint = styled.p`
-  margin-bottom: 20px;
 `;
 
 const attributeList = ["STR", "INT", "AGI", "LUK"];
@@ -128,84 +100,21 @@ export default function HeroProfile() {
     <ProfileWrap>
       <AttributeWrap>
         {attributeList.map((item) => (
-          <Attribute key={item}>
-            <AttributeName>{item}</AttributeName>
-            <ButtonComponent
-              isSubmit={false}
-              clickHandler={() => {
-                increasePoint(item.toLowerCase());
-              }}
-            >
-              +
-            </ButtonComponent>
-            <AttributeCount>
-              {attributePoint && attributePoint[item.toLowerCase()]}
-            </AttributeCount>
-            <ButtonComponent
-              isSubmit={false}
-              clickHandler={() => {
-                decreasePoint(item.toLowerCase());
-              }}
-            >
-              -
-            </ButtonComponent>
-          </Attribute>
+          <AttributeItem
+            key={item}
+            attributePoint={attributePoint}
+            attributeName={item}
+            increaseHandler={increasePoint}
+            decreaseHandler={decreasePoint}
+          />
         ))}
       </AttributeWrap>
-      <LeftPointWrap>
-        <LeftPoint>
-          剩餘點數：
-          {leftPoint}
-        </LeftPoint>
-        <ButtonComponent isSubmit clickHandler={submitProfile}>
-          儲存
-        </ButtonComponent>
-      </LeftPointWrap>
-
+      <LeftPointArea submitFunction={submitProfile} point={leftPoint} />
       {showSaveFailNotice &&
-        createPortal(
-          <NoticeAlert
-            closeModal={() => {
-              setShowSaveFailNotice(false);
-            }}
-          >
-            尚有點數未分配
-          </NoticeAlert>,
-          document.querySelector("#modal-root") as HTMLElement
-        )}
-      {showSaveNotice &&
-        createPortal(
-          <NoticeAlert
-            closeModal={() => {
-              setShowSaveNotice(false);
-            }}
-          >
-            已成功儲存資料
-          </NoticeAlert>,
-          document.querySelector("#modal-root") as HTMLElement
-        )}
-      {showTooLowNotice &&
-        createPortal(
-          <NoticeAlert
-            closeModal={() => {
-              setShowTooLowNotice(false);
-            }}
-          >
-            點數不能低於 0
-          </NoticeAlert>,
-          document.querySelector("#modal-root") as HTMLElement
-        )}
-      {showNoPointNotice &&
-        createPortal(
-          <NoticeAlert
-            closeModal={() => {
-              setShowNoPointNotice(false);
-            }}
-          >
-            無可分配點數
-          </NoticeAlert>,
-          document.querySelector("#modal-root") as HTMLElement
-        )}
+        NoticeModal(setShowSaveFailNotice, "尚有點數未分配")}
+      {showSaveNotice && NoticeModal(setShowSaveNotice, "已成功儲存資料")}
+      {showTooLowNotice && NoticeModal(setShowTooLowNotice, "點數不能低於 0")}
+      {showNoPointNotice && NoticeModal(setShowNoPointNotice, "無可分配點數")}
     </ProfileWrap>
   );
 }
