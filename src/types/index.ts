@@ -15,6 +15,7 @@ interface HeroInfoType {
   id: string;
   image: string;
   name: string;
+  heroId?: string;
 }
 
 interface HeroProfileType {

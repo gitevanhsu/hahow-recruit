@@ -16,9 +16,11 @@ const ProfileWrap = styled.div`
   margin: 0 auto;
   padding: 30px;
   border: 1px solid #000;
+  background-color: #f5f5f5;
   margin-top: 20px;
   font-size: 24px;
   font-weight: 500;
+  border-radius: 10px;
 `;
 const AttributeWrap = styled.div`
   width: 50%;

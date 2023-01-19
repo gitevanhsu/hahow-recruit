@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, Link, useParams } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import useGetHeroList from "../hooks/useGetHeroList";
-import { HeroCardProps, HeroInfoType } from "../types";
+import { HeroInfoType } from "../types";
+import HeroCardComponent from "../components/HeroCard";
 
 const PageWrap = styled.div`
   padding: 50px 0;
@@ -17,24 +18,8 @@ const HeroListWrap = styled.div`
   margin: 0 auto;
   padding: 10px;
   border: 1px solid #000;
-`;
-
-const HeroCard = styled(Link)<HeroCardProps>`
-  display: block;
-  width: 220px;
-  margin: 10px 5px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  text-decoration: none;
-  color: #000;
-  border: 2px solid ${(props) => (props.current === "true" ? "#f00" : "#000")};
-`;
-const HeroImage = styled.img``;
-const HeroName = styled.h2`
-  margin: 30px 0;
-  font-size: 24px;
-  font-weight: 500;
+  border-radius: 10px;
+  background-color: #f5f5f5;
 `;
 
 export default function Heroes() {
@@ -57,14 +42,13 @@ export default function Heroes() {
         {heroList.map((hero: HeroInfoType) => {
           const { id, image, name } = hero;
           return (
-            <HeroCard
-              current={`${heroId === id}`}
-              to={`/heroes/${id}`}
+            <HeroCardComponent
               key={id}
-            >
-              <HeroImage src={image} />
-              <HeroName>{name}</HeroName>
-            </HeroCard>
+              heroId={heroId}
+              id={id}
+              image={image}
+              name={name}
+            />
           );
         })}
       </HeroListWrap>
