@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "@emotion/styled";
 
-import ButtonComponent from "../components/Button";
 import { HeroProfileType } from "../types";
+import NoticeModal from "../components/NoticeModal";
+import LeftPointArea from "../components/LeftPointArea";
+import AttributeItem from "../components/Attribute";
+import useGetHeroProfile from "../hooks/useGetHeroProfile";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -21,34 +24,6 @@ const AttributeWrap = styled.div`
   width: 50%;
   min-width: 210px;
 `;
-const Attribute = styled.div`
-  padding: 20px 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const AttributeName = styled.div`
-  width: 100px;
-`;
-const AttributeCount = styled.div`
-  width: 50px;
-  text-align: center;
-`;
-
-const LeftPointWrap = styled(AttributeWrap)`
-  padding: 10px;
-  margin-top: auto;
-  margin-right: auto;
-  text-align: right;
-  @media screen and (max-width: 507px) {
-    margin-top: 20px;
-    text-align: left;
-  }
-`;
-
-const LeftPoint = styled.p`
-  margin-bottom: 20px;
-`;
 
 const attributeList = ["STR", "INT", "AGI", "LUK"];
 const attributeInit = {
@@ -59,74 +34,83 @@ const attributeInit = {
 };
 
 export default function HeroProfile() {
+  const heroId = useOutletContext() as string;
+  const result = useGetHeroProfile(heroId);
+  const navigate = useNavigate();
+
   const [attributePoint, setAttributePoint] =
     useState<HeroProfileType>(attributeInit);
   const [leftPoint, setLeftPoint] = useState(0);
-  const { heroId } = useParams();
+
+  const [showSaveNotice, setShowSaveNotice] = useState(false);
+  const [showSaveFailNotice, setShowSaveFailNotice] = useState(false);
+  const [showTooLowNotice, setShowTooLowNotice] = useState(false);
+  const [showNoPointNotice, setShowNoPointNotice] = useState(false);
+
   useEffect(() => {
-    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAttributePoint(data);
-        setLeftPoint(0);
-      });
-  }, [heroId]);
+    if (!result) {
+      navigate("/heroes/1");
+    } else {
+      setAttributePoint(result);
+    }
+  }, [result, navigate]);
 
   const increasePoint = (attr: string) => {
-    if (!leftPoint) return;
-    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] += 1) }));
-    setLeftPoint((l) => l - 1);
+    if (!leftPoint) {
+      setShowNoPointNotice(true);
+    } else {
+      setAttributePoint({
+        ...attributePoint,
+        [attr]: (attributePoint[attr] += 1),
+      });
+      setLeftPoint(leftPoint - 1);
+    }
   };
 
   const decreasePoint = (attr: string) => {
-    if (attributePoint[attr] <= 0) return;
-    setAttributePoint((a) => ({ ...a, attr: (attributePoint[attr] -= 1) }));
-    setLeftPoint((l) => l + 1);
+    if (attributePoint[attr] <= 0) {
+      setShowTooLowNotice(true);
+    } else {
+      setAttributePoint({
+        ...attributePoint,
+        [attr]: (attributePoint[attr] -= 1),
+      });
+      setLeftPoint(leftPoint + 1);
+    }
   };
 
   const submitProfile = () => {
-    if (leftPoint) return;
-    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`, {
-      method: "PATCH",
-      headers: { "Content-Type": " application/json" },
-      body: JSON.stringify(attributePoint),
-    });
+    if (leftPoint) {
+      setShowSaveFailNotice(true);
+    } else {
+      fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`, {
+        method: "PATCH",
+        headers: { "Content-Type": " application/json" },
+        body: JSON.stringify(attributePoint),
+      });
+      setShowSaveNotice(true);
+    }
   };
 
   return (
     <ProfileWrap>
       <AttributeWrap>
         {attributeList.map((item) => (
-          <Attribute key={item}>
-            <AttributeName>{item}</AttributeName>
-            <ButtonComponent
-              isSubmit={false}
-              clickHandler={() => {
-                increasePoint(item.toLowerCase());
-              }}
-            >
-              +
-            </ButtonComponent>
-            <AttributeCount>
-              {attributePoint && attributePoint[item.toLowerCase()]}
-            </AttributeCount>
-            <ButtonComponent
-              isSubmit={false}
-              clickHandler={() => {
-                decreasePoint(item.toLowerCase());
-              }}
-            >
-              -
-            </ButtonComponent>
-          </Attribute>
+          <AttributeItem
+            key={item}
+            attributePoint={attributePoint}
+            attributeName={item}
+            increaseHandler={increasePoint}
+            decreaseHandler={decreasePoint}
+          />
         ))}
       </AttributeWrap>
-      <LeftPointWrap>
-        <LeftPoint>剩餘點數：{leftPoint}</LeftPoint>
-        <ButtonComponent isSubmit clickHandler={submitProfile}>
-          儲存
-        </ButtonComponent>
-      </LeftPointWrap>
+      <LeftPointArea submitFunction={submitProfile} point={leftPoint} />
+      {showSaveFailNotice &&
+        NoticeModal(setShowSaveFailNotice, "尚有點數未分配")}
+      {showSaveNotice && NoticeModal(setShowSaveNotice, "已成功儲存資料")}
+      {showTooLowNotice && NoticeModal(setShowTooLowNotice, "點數不能低於 0")}
+      {showNoPointNotice && NoticeModal(setShowNoPointNotice, "無可分配點數")}
     </ProfileWrap>
   );
 }

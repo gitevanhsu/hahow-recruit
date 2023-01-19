@@ -1,5 +1,5 @@
-import { ButtonType, ButtonProps } from "../types";
 import styled from "@emotion/styled";
+import { ButtonType, ButtonProps } from "../types";
 
 const Button = styled.button<ButtonProps>`
   min-width: 30px;
@@ -11,6 +11,9 @@ const Button = styled.button<ButtonProps>`
   border: 2px solid #000;
   border-radius: 5px;
   cursor: pointer;
+  &:hover {
+    background-color: #b2b2b2;
+  }
 `;
 
 export default function ButtonComponent({

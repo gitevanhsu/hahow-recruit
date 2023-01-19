@@ -8,8 +8,15 @@ interface ButtonProps {
 }
 
 interface HeroCardProps {
-  nowPath: boolean;
+  current: string;
 }
+
+interface HeroInfoType {
+  id: string;
+  image: string;
+  name: string;
+}
+
 interface HeroProfileType {
   [key: string]: number;
   agi: number;
@@ -18,4 +25,28 @@ interface HeroProfileType {
   str: number;
 }
 
-export type { ButtonType, ButtonProps, HeroCardProps, HeroProfileType };
+interface AttributeItemProps {
+  attributePoint: HeroProfileType;
+  attributeName: string;
+  increaseHandler: (attr: string) => void;
+  decreaseHandler: (attr: string) => void;
+}
+
+interface LeftPointAreaProps {
+  submitFunction: () => void;
+  point: number;
+}
+
+interface ModalContentProps {
+  popup: boolean;
+}
+export type {
+  ButtonType,
+  ButtonProps,
+  HeroCardProps,
+  HeroProfileType,
+  HeroInfoType,
+  AttributeItemProps,
+  LeftPointAreaProps,
+  ModalContentProps,
+};
