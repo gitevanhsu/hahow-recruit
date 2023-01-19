@@ -57,8 +57,11 @@ export default function NoticeAlert({ children, closeModal }: NoticeAlertProps) 
 
   useEffect(() => {
     setIsPopup(true);
-    setTimeout(() => closeModal(), 1000);
-    return () => setIsPopup(false);
+    const timer = setTimeout(() => closeModal(), 1000);
+    return () => {
+      setIsPopup(false);
+      clearTimeout(timer);
+    };
   }, [closeModal]);
 
   return (
