@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "@emotion/styled";
 
@@ -6,7 +6,7 @@ import { HeroProfileType } from "../types";
 import NoticeModal from "../components/NoticeModal";
 import LeftPointArea from "../components/LeftPointArea";
 import AttributeItem from "../components/Attribute";
-import useGetHeroProfile from "../hooks/useGetHeroProfile";
+import { HeroesProfileContext } from "../context/HeroesProfile";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -36,11 +36,10 @@ const attributeInit = {
 };
 
 export default function HeroProfile() {
+  const { heroesProfile, setHeroProfile } = useContext(HeroesProfileContext);
   const heroId = useOutletContext() as string;
-  const result = useGetHeroProfile(heroId);
   const navigate = useNavigate();
-  // const value = useContext(HeroesProfileContext);
-  // console.log(value);
+
   const [attributePoint, setAttributePoint] =
     useState<HeroProfileType>(attributeInit);
   const [leftPoint, setLeftPoint] = useState(0);
@@ -51,12 +50,13 @@ export default function HeroProfile() {
   const [showNoPointNotice, setShowNoPointNotice] = useState(false);
 
   useEffect(() => {
-    if (!result) {
+    const heroData = heroesProfile?.find((hero) => hero.info.id === heroId);
+    if (!heroData) {
       navigate("/heroes/1");
     } else {
-      setAttributePoint(result);
+      setAttributePoint(heroData.data);
     }
-  }, [result, navigate]);
+  }, [heroId, heroesProfile, navigate]);
 
   const increasePoint = (attr: string) => {
     if (!leftPoint) {
@@ -92,6 +92,12 @@ export default function HeroProfile() {
         body: JSON.stringify(attributePoint),
       });
       setShowSaveNotice(true);
+      setHeroProfile((s) => s.map((hero) => {
+        if (hero.info.id === heroId) {
+          return { ...hero, data: attributePoint };
+        }
+        return hero;
+      }));
     }
   };
 

@@ -39,8 +39,8 @@ export default function Heroes() {
   }, [location]);
 
   return (
-    <PageWrap>
-      <HeroesProfileProvider heroList={heroList}>
+    <HeroesProfileProvider heroList={heroList}>
+      <PageWrap>
         <HeroListWrap>
           {heroList.map((hero: HeroInfoType) => {
             const { id, image, name } = hero;
@@ -55,8 +55,8 @@ export default function Heroes() {
             );
           })}
         </HeroListWrap>
-      </HeroesProfileProvider>
-      {heroId && <Outlet context={heroId} />}
-    </PageWrap>
+        {heroId && <Outlet context={heroId} />}
+      </PageWrap>
+    </HeroesProfileProvider>
   );
 }
