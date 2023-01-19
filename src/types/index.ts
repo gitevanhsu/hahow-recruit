@@ -41,6 +41,17 @@ interface LeftPointAreaProps {
 interface ModalContentProps {
   popup: boolean;
 }
+
+interface FullHeroInfo {
+  info: HeroInfoType;
+  data: HeroProfileType
+}
+
+interface HeroContextType {
+  heroesProfile : FullHeroInfo[] | undefined;
+  setHeroProfile : React.Dispatch<React.SetStateAction<FullHeroInfo[]>>;
+}
+
 export type {
   ButtonType,
   ButtonProps,
@@ -50,4 +61,6 @@ export type {
   AttributeItemProps,
   LeftPointAreaProps,
   ModalContentProps,
+  FullHeroInfo,
+  HeroContextType
 };

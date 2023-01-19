@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import useGetHeroList from "../hooks/useGetHeroList";
 import { HeroInfoType } from "../types";
 import HeroCardComponent from "../components/HeroCard";
+import HeroesProfileProvider from "../context/HeroesProfile";
 
 const PageWrap = styled.div`
   padding: 50px 0;
@@ -26,6 +27,8 @@ export default function Heroes() {
   const location = useLocation();
   const { heroId } = useParams();
 
+  const heroList = useGetHeroList();
+
   // modify tab title when path change.
   useEffect(() => {
     if (location.pathname === "/heroes/" || location.pathname === "/heroes") {
@@ -34,24 +37,25 @@ export default function Heroes() {
       document.title = "Hero Profile Page";
     }
   }, [location]);
-  const heroList = useGetHeroList();
 
   return (
     <PageWrap>
-      <HeroListWrap>
-        {heroList.map((hero: HeroInfoType) => {
-          const { id, image, name } = hero;
-          return (
-            <HeroCardComponent
-              key={id}
-              heroId={heroId}
-              id={id}
-              image={image}
-              name={name}
-            />
-          );
-        })}
-      </HeroListWrap>
+      <HeroesProfileProvider heroList={heroList}>
+        <HeroListWrap>
+          {heroList.map((hero: HeroInfoType) => {
+            const { id, image, name } = hero;
+            return (
+              <HeroCardComponent
+                key={id}
+                heroId={heroId}
+                id={id}
+                image={image}
+                name={name}
+              />
+            );
+          })}
+        </HeroListWrap>
+      </HeroesProfileProvider>
       {heroId && <Outlet context={heroId} />}
     </PageWrap>
   );

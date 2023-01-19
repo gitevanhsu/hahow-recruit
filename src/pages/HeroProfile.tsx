@@ -39,7 +39,8 @@ export default function HeroProfile() {
   const heroId = useOutletContext() as string;
   const result = useGetHeroProfile(heroId);
   const navigate = useNavigate();
-
+  // const value = useContext(HeroesProfileContext);
+  // console.log(value);
   const [attributePoint, setAttributePoint] =
     useState<HeroProfileType>(attributeInit);
   const [leftPoint, setLeftPoint] = useState(0);
