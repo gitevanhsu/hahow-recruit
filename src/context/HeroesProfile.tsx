@@ -5,6 +5,7 @@ import {
   useEffect,
   useMemo,
 } from "react";
+
 import { FullHeroInfo, HeroContextType, HeroInfoType } from "../types";
 
 const initHeroesData = {
@@ -33,10 +34,7 @@ export default function HeroesProfileProvider({
     getHeroesProfile().then((data) => setHeroProfile(data));
   }, [heroList]);
 
-  const data = useMemo(
-    () => ({ heroesProfile, setHeroProfile }),
-    [heroesProfile]
-  );
+  const data = useMemo(() => ({ heroesProfile, setHeroProfile }), [heroesProfile]);
 
   return (
     <HeroesProfileContext.Provider value={data}>

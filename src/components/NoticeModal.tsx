@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+
 import NoticeAlert from "../modal";
 
 export default function NoticeModal(
@@ -6,11 +7,7 @@ export default function NoticeModal(
   content: string
 ) {
   return createPortal(
-    <NoticeAlert
-      closeModal={() => {
-        closeFunction(false);
-      }}
-    >
+    <NoticeAlert closeModal={() => closeFunction(false)}>
       {content}
     </NoticeAlert>,
     document.querySelector("#modal-root") as HTMLElement

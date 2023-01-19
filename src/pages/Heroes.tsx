@@ -11,8 +11,8 @@ import {
   DraggableProvided,
 } from "react-beautiful-dnd";
 
-import useGetHeroList from "../hooks/useGetHeroList";
 import { HeroInfoType } from "../types";
+import useGetHeroList from "../hooks/useGetHeroList";
 import HeroCardComponent from "../components/HeroCard";
 import HeroesProfileProvider from "../context/HeroesProfile";
 
@@ -35,7 +35,6 @@ const HeroListWrap = styled.div`
 export default function Heroes() {
   const location = useLocation();
   const { heroId } = useParams();
-
   const { heroList, setHeroList } = useGetHeroList();
 
   useEffect(() => {
@@ -46,8 +45,10 @@ export default function Heroes() {
     }
   }, [location]);
 
+  // after drag modify hero list order
   const onDragEnd = (dragEvent: DropResult) => {
     if (!dragEvent.destination) return;
+
     const dragIndex = dragEvent.source.index;
     const dropIndex = dragEvent.destination.index;
     const newList = [...heroList];
@@ -90,7 +91,6 @@ export default function Heroes() {
             )}
           </Droppable>
         </DragDropContext>
-
         {heroId && <Outlet context={heroId} />}
       </PageWrap>
     </HeroesProfileProvider>

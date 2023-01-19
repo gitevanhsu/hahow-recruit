@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+
 import ButtonComponent from "./Button";
 import { LeftPointAreaProps } from "../types";
 
@@ -14,7 +15,6 @@ const LeftPointWrap = styled.div`
     text-align: left;
   }
 `;
-
 const LeftPoint = styled.p`
   margin-bottom: 20px;
 `;
