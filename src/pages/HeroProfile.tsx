@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import styled from "@emotion/styled";
 
 import { HeroProfileType } from "../types";
 import NoticeModal from "../components/NoticeModal";
 import LeftPointArea from "../components/LeftPointArea";
 import AttributeItem from "../components/Attribute";
+import useGetHeroProfile from "../hooks/useGetHeroProfile";
 
 const ProfileWrap = styled.div`
   width: 95%;
@@ -33,11 +34,13 @@ const attributeInit = {
 };
 
 export default function HeroProfile() {
+  const heroId = useOutletContext() as string;
+  const result = useGetHeroProfile(heroId);
+  const navigate = useNavigate();
+
   const [attributePoint, setAttributePoint] =
     useState<HeroProfileType>(attributeInit);
   const [leftPoint, setLeftPoint] = useState(0);
-  const { heroId } = useParams();
-  const navigate = useNavigate();
 
   const [showSaveNotice, setShowSaveNotice] = useState(false);
   const [showSaveFailNotice, setShowSaveFailNotice] = useState(false);
@@ -45,19 +48,12 @@ export default function HeroProfile() {
   const [showNoPointNotice, setShowNoPointNotice] = useState(false);
 
   useEffect(() => {
-    fetch(`https://hahow-recruit.herokuapp.com/heroes/${heroId}/profile`)
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        throw new Error("nodata");
-      })
-      .then((data) => {
-        setAttributePoint(data);
-        setLeftPoint(0);
-      })
-      .catch(() => navigate("/heroes/1"));
-  }, [heroId, navigate]);
+    if (!result) {
+      navigate("/heroes/1");
+    } else {
+      setAttributePoint(result);
+    }
+  }, [result, navigate]);
 
   const increasePoint = (attr: string) => {
     if (!leftPoint) {

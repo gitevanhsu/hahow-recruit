@@ -1,5 +1,3 @@
-import { ReactElement } from "react";
-
 interface ButtonType {
   children: string;
   clickHandler: () => void;

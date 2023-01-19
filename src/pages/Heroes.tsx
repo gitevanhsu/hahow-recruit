@@ -68,7 +68,7 @@ export default function Heroes() {
           );
         })}
       </HeroListWrap>
-      <Outlet />
+      {heroId && <Outlet context={heroId} />}
     </PageWrap>
   );
 }
