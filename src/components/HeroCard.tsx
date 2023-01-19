@@ -1,14 +1,13 @@
-import { useContext } from "react";
-import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-import { HeroCardProps, HeroInfoType } from "../types";
+import styled from "@emotion/styled";
 
-import { HeroesProfileContext } from "../context/HeroesProfile";
+import { HeroCardProps, HeroInfoType } from "../types";
+import PreviewProfileComponent, { PreviewCard } from "./PreviewProfile";
 
 const HeroCard = styled(Link)<HeroCardProps>`
   display: block;
   width: 220px;
-  margin: 10px 5px;
+  margin: 20px 5px;
   padding: 10px;
   text-align: center;
   cursor: pointer;
@@ -19,7 +18,6 @@ const HeroCard = styled(Link)<HeroCardProps>`
   overflow: hidden;
   border: 1px solid #ccc;
   transform: ${(props) => (props.current === "true" ? "translateY(-10px)" : "translateY(0px)")};
-
   &::before {
     content: "";
     position: absolute;
@@ -53,70 +51,24 @@ const HeroCard = styled(Link)<HeroCardProps>`
     }
   }
 `;
-
-const PreviewCard = styled.div`
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 5px;
-  border-radius: 5px;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color: #ddd;
-  transition: 0.3s;
-  opacity: 0;
-`;
 const HeroCardWrap = styled.div`
   position: relative;
   &:hover ${PreviewCard} {
-    bottom: -20px;
+    bottom: -30px;
     transition: 0.3s;
     opacity: 1;
   }
-  &: hover ${HeroCard} {
+  &:hover ${HeroCard} {
     transform: translateY(-10px);
     transition: 0.3s;
-  } ;
+  }
 `;
-
 const HeroImage = styled.img``;
 const HeroName = styled.h2`
   margin: 30px 0;
   font-size: 24px;
   font-weight: 500;
 `;
-
-const PreviewItemWrap = styled.div`
-  width: 100px;
-`;
-const PreviewItem = styled.div`
-  display: inline-block;
-  min-width: 40px;
-`;
-const PreviewContent = styled.p`
-  display: inline-block;
-`;
-
-function PreviewProfileComponent({ id }:{id:string}) {
-  const { heroesProfile } = useContext(HeroesProfileContext);
-
-  const heroProfile = heroesProfile?.filter((hero) => hero.info.id === id)[0];
-
-  return (
-    <PreviewCard>
-      {heroProfile?.data && Object.keys(heroProfile.data).map((item) => (
-        <PreviewItemWrap key={item}>
-          <PreviewItem>{item.toUpperCase()}</PreviewItem>
-          :
-          <PreviewContent>{heroProfile.data[item]}</PreviewContent>
-        </PreviewItemWrap>
-      ))}
-    </PreviewCard>
-  );
-}
 
 export default function HeroCardComponent({
   heroId,

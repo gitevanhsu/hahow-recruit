@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import emotionReset from "emotion-reset";
 import { Global, css } from "@emotion/react";

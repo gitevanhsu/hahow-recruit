@@ -52,6 +52,11 @@ interface HeroContextType {
   setHeroProfile : React.Dispatch<React.SetStateAction<FullHeroInfo[]>>;
 }
 
+interface NoticeAlertProps {
+  children: string;
+  closeModal: () => void;
+}
+
 export type {
   ButtonType,
   ButtonProps,
@@ -62,5 +67,6 @@ export type {
   LeftPointAreaProps,
   ModalContentProps,
   FullHeroInfo,
-  HeroContextType
+  HeroContextType,
+  NoticeAlertProps
 };

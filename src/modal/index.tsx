@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 
+import { ModalContentProps, NoticeAlertProps } from "../types";
 // eslint-disable-next-line import/no-unresolved, import/no-absolute-path
 import notice from "/notice.png";
-import { ModalContentProps } from "../types";
 
 const ModalWrap = styled.div`
   width: 100vw;
@@ -15,7 +15,6 @@ const ModalWrap = styled.div`
   top: 0;
   left: 0;
 `;
-
 const OverLay = styled.div`
   width: 100%;
   height: 100%;
@@ -23,7 +22,6 @@ const OverLay = styled.div`
   background-color: #000;
   opacity: 0.3;
 `;
-
 const ModalContent = styled.div<ModalContentProps>`
   width: 300px;
   height: 300px;
@@ -45,7 +43,6 @@ const ModalContent = styled.div<ModalContentProps>`
     transition: width 1s linear;
   }
 `;
-
 const Image = styled.img`
   width: 50%;
 `;
@@ -54,20 +51,13 @@ const Text = styled.p`
   margin-top: 50px;
   font-size: 24px;
 `;
-export default function NoticeAlert({
-  children,
-  closeModal,
-}: {
-  children: string;
-  closeModal: () => void;
-}) {
+
+export default function NoticeAlert({ children, closeModal }: NoticeAlertProps) {
   const [isPopup, setIsPopup] = useState(false);
 
   useEffect(() => {
     setIsPopup(true);
-    setTimeout(() => {
-      closeModal();
-    }, 1000);
+    setTimeout(() => closeModal(), 1000);
     return () => setIsPopup(false);
   }, [closeModal]);
 

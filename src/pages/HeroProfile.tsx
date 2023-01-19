@@ -28,22 +28,17 @@ const AttributeWrap = styled.div`
 `;
 
 const attributeList = ["STR", "INT", "AGI", "LUK"];
-const attributeInit = {
-  agi: 0,
-  int: 0,
-  luk: 0,
-  str: 0,
-};
+const attributeInit = { agi: 0, int: 0, luk: 0, str: 0 };
 
 export default function HeroProfile() {
   const { heroesProfile, setHeroProfile } = useContext(HeroesProfileContext);
   const heroId = useOutletContext() as string;
   const navigate = useNavigate();
 
-  const [attributePoint, setAttributePoint] =
-    useState<HeroProfileType>(attributeInit);
+  const [attributePoint, setAttributePoint] = useState<HeroProfileType>(attributeInit);
   const [leftPoint, setLeftPoint] = useState(0);
 
+  // popup modal state
   const [showSaveNotice, setShowSaveNotice] = useState(false);
   const [showSaveFailNotice, setShowSaveFailNotice] = useState(false);
   const [showTooLowNotice, setShowTooLowNotice] = useState(false);
@@ -51,6 +46,7 @@ export default function HeroProfile() {
 
   useEffect(() => {
     const heroData = heroesProfile?.find((hero) => hero.info.id === heroId);
+    // if hero is not exist redirect to hero 1 page.
     if (!heroData) {
       navigate("/heroes/1");
     } else {
@@ -62,10 +58,7 @@ export default function HeroProfile() {
     if (!leftPoint) {
       setShowNoPointNotice(true);
     } else {
-      setAttributePoint({
-        ...attributePoint,
-        [attr]: (attributePoint[attr] += 1),
-      });
+      setAttributePoint({ ...attributePoint, [attr]: (attributePoint[attr] += 1) });
       setLeftPoint(leftPoint - 1);
     }
   };
@@ -74,10 +67,7 @@ export default function HeroProfile() {
     if (attributePoint[attr] <= 0) {
       setShowTooLowNotice(true);
     } else {
-      setAttributePoint({
-        ...attributePoint,
-        [attr]: (attributePoint[attr] -= 1),
-      });
+      setAttributePoint({ ...attributePoint, [attr]: (attributePoint[attr] -= 1) });
       setLeftPoint(leftPoint + 1);
     }
   };
@@ -115,8 +105,7 @@ export default function HeroProfile() {
         ))}
       </AttributeWrap>
       <LeftPointArea submitFunction={submitProfile} point={leftPoint} />
-      {showSaveFailNotice &&
-        NoticeModal(setShowSaveFailNotice, "尚有點數未分配")}
+      {showSaveFailNotice && NoticeModal(setShowSaveFailNotice, "尚有點數未分配")}
       {showSaveNotice && NoticeModal(setShowSaveNotice, "已成功儲存資料")}
       {showTooLowNotice && NoticeModal(setShowTooLowNotice, "點數不能低於 0")}
       {showNoPointNotice && NoticeModal(setShowNoPointNotice, "無可分配點數")}

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+
 import ButtonComponent from "./Button";
 import { AttributeItemProps } from "../types";
 
@@ -27,9 +28,7 @@ export default function AttributeItem({
       <AttributeName>{attributeName}</AttributeName>
       <ButtonComponent
         isSubmit={false}
-        clickHandler={() => {
-          increaseHandler(attributeName.toLowerCase());
-        }}
+        clickHandler={() => increaseHandler(attributeName.toLowerCase())}
       >
         +
       </ButtonComponent>
@@ -38,9 +37,7 @@ export default function AttributeItem({
       </AttributeCount>
       <ButtonComponent
         isSubmit={false}
-        clickHandler={() => {
-          decreaseHandler(attributeName.toLowerCase());
-        }}
+        clickHandler={() => decreaseHandler(attributeName.toLowerCase())}
       >
         -
       </ButtonComponent>
