@@ -35,6 +35,12 @@
    當使用者操作錯誤或成功儲存 hero profile 時會跳出 modal 提醒用戶。
    modal 可以點擊旁邊灰色處關閉，或是 1 秒後自動關閉。
 
+3. **拖拉調整卡片位置** 
+
+   https://user-images.githubusercontent.com/92194495/213650806-23bdf2df-82a1-40f4-b5b0-1ddd1d7582df.mov
+   
+   使用者可以透過拖拉的方式挑整卡片位置。
+
 ## Web 架構
 
 ![web snapshot](https://i.imgur.com/pcltmpx.png)
